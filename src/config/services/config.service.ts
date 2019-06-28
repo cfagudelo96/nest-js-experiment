@@ -16,6 +16,10 @@ export class ConfigService {
     return this.envConfig[key];
   }
 
+  getSecretKey(): string {
+    return this.get('SECRET_KEY');
+  }
+
   getDatabaseConfiguration():
     | Promise<TypeOrmModuleOptions>
     | TypeOrmModuleOptions {

@@ -6,14 +6,19 @@ import { User } from '@nest-experiment/users/models/user.entity';
 
 import { JwtPayload } from '../models/jwt-payload.interface';
 
+import { ConfigService } from '@nest-experiment/config/services/config.service';
+
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly authService: AuthService) {
+  constructor(
+    private readonly authService: AuthService,
+    protected readonly configService: ConfigService
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: 'secretKey'
+      secretOrKey: configService.getSecretKey()
     });
   }
 
