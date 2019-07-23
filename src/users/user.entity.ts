@@ -1,7 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  OneToMany
+} from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+
+import { UserRole } from '@nest-experiment/user-roles/user-role.entity';
 
 import { CreateUserDto } from './create-user.dto';
 
@@ -30,6 +38,9 @@ export class User {
   @IsNotEmpty()
   email: string;
 
+  @OneToMany(() => UserRole, userRole => userRole.user)
+  roles: UserRole[];
+
   @Column()
   @IsNotEmpty()
   @Exclude()
@@ -45,6 +56,6 @@ export class User {
   }
 
   async isSamePassword(password: string): Promise<boolean> {
-    return await bcrypt.compare(password, this.password);
+    return bcrypt.compare(password, this.password);
   }
 }

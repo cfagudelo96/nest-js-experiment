@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { UsersService } from '@nest-experiment/users/services/users.service';
-import { User } from '@nest-experiment/users/models/user.entity';
+import { UsersService } from '@nest-experiment/users/users.service';
+import { User } from '@nest-experiment/users/user.entity';
 
-import { JwtPayload } from '../models/jwt-payload.interface';
-import { CredentialsDto } from '../models/credentials.dto';
+import { JwtPayload } from './jwt-payload.interface';
+import { CredentialsDto } from './credentials.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +24,6 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
-    return await this.usersService.findByEmail(payload.email);
+    return this.usersService.findByEmail(payload.email);
   }
 }

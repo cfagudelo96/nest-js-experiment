@@ -5,13 +5,17 @@ import {
   Get,
   UseInterceptors,
   ClassSerializerInterceptor,
-  UseGuards
+  UseGuards,
+  Request
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { User } from '../models/user.entity';
-import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../models/create-user.dto';
+import { Roles } from '@nest-experiment/auth/roles.decorator';
+import { RolesGuard } from '@nest-experiment/auth/roles.guard';
+
+import { User } from './user.entity';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './create-user.dto';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -19,7 +23,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), RolesGuard)
+  @Roles('admin')
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }

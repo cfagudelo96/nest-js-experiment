@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User } from '../models/user.entity';
-import { CreateUserDto } from '../models/create-user.dto';
-import { CredentialsDto } from '@nest-experiment/auth/models/credentials.dto';
+import { CredentialsDto } from '@nest-experiment/auth/credentials.dto';
+
+import { User } from './user.entity';
+import { CreateUserDto } from './create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -14,15 +15,15 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    return this.userRepository.find();
   }
 
   async findById(id: number): Promise<User> {
-    return await this.userRepository.findOne(id);
+    return this.userRepository.findOne(id);
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne({ email });
+    return this.userRepository.findOne({ email });
   }
 
   async findByCredentials(credentials: CredentialsDto): Promise<User> {
@@ -37,6 +38,6 @@ export class UsersService {
 
   async save(createUserDto: CreateUserDto): Promise<User> {
     const user = User.fromCreateDto(createUserDto);
-    return await this.userRepository.save(user);
+    return this.userRepository.save(user);
   }
 }

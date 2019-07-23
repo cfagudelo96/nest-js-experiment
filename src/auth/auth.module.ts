@@ -1,15 +1,19 @@
+import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
 import { ConfigModule } from '@nest-experiment/config/config.module';
-import { ConfigService } from '@nest-experiment/config/services/config.service';
+import { ConfigService } from '@nest-experiment/config/config.service';
 
 import { UsersModule } from '@nest-experiment/users/users.module';
+import { UserRolesModule } from '@nest-experiment/user-roles/user-roles.module';
 
-import { AuthService } from './services/auth.service';
-import { JwtStrategy } from './services/jwt.strategy';
-import { AuthController } from './controllers/auth.controller';
+import { AuthService } from './auth.service';
+import { JwtStrategy } from './jwt.strategy';
+import { AuthController } from './auth.controller';
+import { RolesGuard } from './roles.guard';
+import { UserRolesService } from '@nest-experiment/user-roles/user-roles.service';
 
 @Module({
   imports: [
@@ -27,9 +31,17 @@ import { AuthController } from './controllers/auth.controller';
       }
     }),
     ConfigModule,
-    UsersModule
+    UsersModule,
+    UserRolesModule
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard
+    }
+  ],
   exports: [PassportModule, AuthService],
   controllers: [AuthController]
 })
